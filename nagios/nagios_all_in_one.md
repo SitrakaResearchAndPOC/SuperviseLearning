@@ -1,1 +1,127 @@
+# Lancer le conteneur
+```
+docker run -itd --name nagios-all --hostname nagios-all \
+    -p 8080:80 \
+    -p 443:443 \
+    ubuntu:22.04
+```
+# Demarrage de nagios
+```
+docker exec -it nagios-all bash
+```
+# Installation des dependances
+```
+apt update && apt install -y wget unzip apache2 php libapache2-mod-php build-essential libgd-dev openssl libssl-dev daemon nagios-plugins nagios-nrpe-server nano
+```
+```
+apt install -y nagios-plugins-basic nagios-plugins-standard
+```    
+# Installation Nagios
+```
+cd /tmp
+```
+```
+wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.5.9.tar.gz
+```
+```
+tar xzf nagios-4.5.9.tar.gz
+```
+```
+cd nagios-4.5.9
+```
+```
+./configure --with-httpd-conf=/etc/apache2/sites-enabled
+```
+```
+make all
+```
+```
+make install
+```
+```
+make install-commandmode
+```
+```
+make install-init
+```
+```
+make install-config
+```
+```
+make install-webconf
+```
+```
+make install
+```
+```
+ldconfig  
+```
+```   
+ls -l /usr/local/nagios/bin/nagios
+```
+```    
+htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+```
+```
+a2enmod cgi
+```   
+```  
+usermod -s /bin/bash nagios
+```
+```
+chown -R nagios:nagios /usr/local/nagios
+```
+```
+chmod -R 755 /usr/local/nagios
+```   
+```   
+nano /etc/nagios/nrpe.cfg
+```
+```
+ls /etc/nagios/*
+```
+dont_blame_nrpe=1	   
+# Chemin par defaut de NRPE   
+```   
+mkdir -p /usr/local/nagios/libexec
+```
+```
+ln -s /usr/lib/nagios/plugins/* /usr/local/nagios/libexec/
+```
+```   
+ls /usr/local/nagios/libexec/*
+```
+```
+service nagios start
+```
+```
+service nagios status
+```
+```   
+service apache2 start
+```
+```
+service nagios-nrpe-server restart
+```
+```
+service nagios-nrpe-server status
+```
+```   
+sudo -u nagios /usr/local/nagios/libexec/check_load -w 5,4,3 -c 10,6,4
+```
+```
+service nagios restart
+```
+```
+'# /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+
+```  
+service nagios-nrpe-server restart
+```   
+</br></br>   
+http://localhost:8080/nagios
+   
+   
+   
+
 
